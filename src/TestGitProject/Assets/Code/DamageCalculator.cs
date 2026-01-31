@@ -4,9 +4,9 @@ namespace Code
 {
     public class DamageCalculator : MonoBehaviour
     {
-        int baseDamage = 5;
-        float multiplier = 1.5f;
-        bool isTrue = true;
+        private int baseDamage = 5;
+        private float multiplier = 1.5f;
+        private bool isTrue = true;
 
         private void Start()
         {

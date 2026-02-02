@@ -3,10 +3,10 @@ namespace Code
 {
     public class AllyOrEnemySpawned : MonoBehaviour
     {
-        public int objectCount = 10;
-        public float spawnRangeX = 5f;
-        public float spawnRangeZ = 5f;
-        public float spawnY = 0.5f;
+        [SerializeField] private int objectCount = 10;
+        [SerializeField] private float spawnRangeX = 5f;
+        [SerializeField] private float spawnRangeZ = 5f;
+        [SerializeField] private float spawnY = 0.5f;
 
         private void Start()
         {

@@ -3,8 +3,8 @@ namespace Code
 {
     public class AllyOrEnemy : MonoBehaviour
     {
-        public bool isEnemy;
-        public bool isAlly;
+        [SerializeField] private bool isEnemy;
+        [SerializeField] private bool isAlly;
         private MeshRenderer meshRenderer;
         private void Start()
         {

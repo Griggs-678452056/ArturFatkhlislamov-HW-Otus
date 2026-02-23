@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Code.Weapon;
 
 namespace Code
 {
@@ -32,6 +33,27 @@ namespace Code
         {
             _rb = GetComponent<Rigidbody>();
         }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            Destroy(gameObject);
+
+            if (other.collider.TryGetComponent<HealthController>(out HealthController health))
+            {
+                if (health.CanTakeDamage(_damage))
+                {
+                    return;
+                }
+
+                if (other.collider.TryGetComponent<Rigidbody>(out Rigidbody rb) == false)
+                {
+                    rb = other.gameObject.AddComponent<Rigidbody>();
+                }
+
+                rb.AddForce(_rb.linearVelocity * Force, ForceMode.Impulse);
+            }
+        }
+
         public void Sleep()
         {
             _rb.Sleep();

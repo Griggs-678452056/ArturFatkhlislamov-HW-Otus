@@ -444,6 +444,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Code.Bullet
   _damage: 5
   _force: 10
+--- !u!136 &812305241
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812305231}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.014923286
+  m_Height: 0.011013224
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -868,6 +891,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2198158164011791422, guid: bc6937a2b57f0e64684a15f05f97ff56, type: 3}
       insertIndex: -1
       addedObject: {fileID: 812305235}
+    - targetCorrespondingSourceObject: {fileID: 2198158164011791422, guid: bc6937a2b57f0e64684a15f05f97ff56, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 812305241}
     - targetCorrespondingSourceObject: {fileID: -7630222689737263549, guid: bc6937a2b57f0e64684a15f05f97ff56, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1538096481}

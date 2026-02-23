@@ -28,11 +28,25 @@ namespace Assets.Code.Weapon
 
             if ( _health <= 0 )
             {
+                StartCoroutine(Die());
                 _isAlive = false;
                 return false;
             }
 
             return true;
+        }
+
+        private IEnumerator Die()
+        {
+            Renderer component = GetComponent<Renderer>();
+
+            component.material.color = Color.red;
+            yield return new WaitForSeconds(1.0f);
+            component.material.color = Color.green;
+            yield return new WaitForSeconds(1.0f);
+            component.material.color = Color.red;
+            yield return new WaitForSeconds(1.0f);
+            component.material.color = Color.magenta;
         }
     }
 }

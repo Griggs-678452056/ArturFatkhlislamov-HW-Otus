@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using Assets.Code.Weapon;
 
 namespace Code
 {
@@ -9,6 +7,8 @@ namespace Code
     {
         [SerializeField] private float _damage = 2.0f;
         [SerializeField] private float _force = 4.0f;
+
+        public bool IsActive { get; private set; }
 
         private Rigidbody _rb;
 
@@ -25,6 +25,12 @@ namespace Code
 
             set
             {
+                if (IsActive == false)
+                {
+                    _force = 0;
+                    return;
+                }
+
                 _force = value;
             }
         }
@@ -53,19 +59,22 @@ namespace Code
                 rb.AddForce(_rb.linearVelocity * Force, ForceMode.Impulse);
             }
         }
-
+                
         public void Sleep()
         {
             _rb.Sleep();
             gameObject.SetActive(false);
+            IsActive = false;
         }
 
         public void Run(Vector3 path, Vector3 position)
         {
             transform.position = position;
+            transform.parent = null;
             gameObject.SetActive(true);
             _rb.WakeUp();
             _rb.AddForce(path);
+            IsActive = true;
         }
     }
 }

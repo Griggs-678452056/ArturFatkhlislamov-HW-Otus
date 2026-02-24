@@ -6,13 +6,13 @@ namespace Code
     public class Weapon : MonoBehaviour
     {
         [SerializeField] private Transform _barrel;
-
         [SerializeField] private Bullet _bulletPrefab;
-        [SerializeField] private Magazine _magazine;
-
         [SerializeField] private int _countClip;
         [SerializeField] private float _force;
         [SerializeField] private float _shotDelay;
+
+        private Transform _bulletRoot;
+        private Bullet[] _bullets;
 
         private bool _canShoot;
         private float _lastShootTime;
@@ -20,6 +20,7 @@ namespace Code
 
         private void Start()
         {
+            _bulletRoot = new GameObject("Bullet root").transform;
             Recharge();
         }
 
@@ -33,16 +34,11 @@ namespace Code
             }
 
             _lastShootTime += Time.deltaTime;
-
-            if (_lastShootTime >= _shotDelay)
-            {
-                _canShoot = true;
-            }
         }
 
         public void Fire()
         {
-            if (!_canShoot)
+            if (_canShoot == false)
             {
                 return;
             }
@@ -50,44 +46,42 @@ namespace Code
             if (TryGetBullet(out Bullet bullet))
             {
                 bullet.Run(_barrel.forward * _force, _barrel.position);
-                _lastShootTime = 0.0f;
-                _canShoot = false;
+                _lastShootTime = 0.0f;                
             }
         }
-                
+
         public void Recharge()
         {
             if (IsAnyActiveBullet())
             {
                 return;
             }
-            _magazine.Bullets = new Bullet[_countClip];
+            _bullets = new Bullet[_countClip];
             for (int i = 0; i < _countClip; i++)
             {
-                Bullet bullet = Instantiate(_bulletPrefab, _magazine.transform);
-                bullet.gameObject.SetActive(false);
+                Bullet bullet = Instantiate(_bulletPrefab, _bulletRoot);
                 bullet.Sleep();
-                _magazine.Bullets[i] = bullet;
+                _bullets[i] = bullet;
             }
         }
 
         private bool IsAnyActiveBullet()
         {
-            if(_magazine.Bullets == null)
+            if (_bullets == null)
             {
                 return false;
             }
 
             for (int i = 0; i < _countClip; i++)
             {
-                Bullet bullet = _magazine.Bullets[i];
+                Bullet bullet = _bullets[i];
 
                 if (bullet == null)
                 {
                     continue;
                 }
 
-                if (bullet.gameObject.activeSelf)
+                if (bullet.IsActive)
                 {
                     return false;
                 }
@@ -100,20 +94,20 @@ namespace Code
             int candidate = -1;
             result = default;
 
-            if (_magazine.Bullets == null)
+            if (_bullets == null)
             {
                 return false;
             }
 
-            for (int i = 0; i < _magazine.Bullets.Length; i++)
+            for (int i = 0; i < _bullets.Length; i++)
             {
-                Bullet bullet = _magazine.Bullets[i];
+                Bullet bullet = _bullets[i];
                 if (bullet == null)
                 {
                     continue;
                 }
 
-                if (bullet.gameObject.activeSelf)
+                if (bullet.IsActive)
                 {
                     continue;
                 }
@@ -127,7 +121,7 @@ namespace Code
                 return false;
             }
 
-            result = _magazine.Bullets[candidate];
+            result = _bullets[candidate];
             return true;
         }
     }

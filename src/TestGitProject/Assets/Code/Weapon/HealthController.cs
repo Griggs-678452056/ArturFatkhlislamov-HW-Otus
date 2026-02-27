@@ -12,6 +12,8 @@ namespace Code
         private float _maxHp;
         private bool _isAlive = true;
 
+        public float MaxHP => _maxHp;
+
         private void Start()
         {
             _maxHp = _health;

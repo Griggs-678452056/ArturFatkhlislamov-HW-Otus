@@ -1,128 +1,40 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace Code
 {
-    public class Weapon : MonoBehaviour
+    public abstract class Weapon : MonoBehaviour
     {
-        [SerializeField] private Transform _barrel;
-        [SerializeField] private Bullet _bulletPrefab;
-        [SerializeField] private int _countClip;
-        [SerializeField] private float _force;
-        [SerializeField] private float _shotDelay;
+        [SerializeField] protected Transform _barrel;
+        [SerializeField] protected WeaponConfig _weaponConfig;
 
-        private Transform _bulletRoot;
-        private Bullet[] _bullets;
+        protected int _countClip;
+        protected float _force;
+        private float _shotDelay;
 
-        private bool _canShoot;
-        private float _lastShootTime;
+        protected bool CanShoot { get; private set; }
+        public float LastShootTime { get; protected set; }
 
-
-        private void Start()
+        protected virtual void Awake()
         {
-            _bulletRoot = new GameObject("Bullet root").transform;
-            Recharge();
+            _countClip = _weaponConfig.ClipSize;
+            _force = _weaponConfig.Force;
+            _shotDelay = _weaponConfig.ShotDelay;
         }
 
         private void Update()
         {
-            _canShoot = _shotDelay <= _lastShootTime;
+            CanShoot = _shotDelay <= LastShootTime;
 
-            if (_canShoot)
+            if (CanShoot)
             {
                 return;
             }
 
-            _lastShootTime += Time.deltaTime;
+            LastShootTime += Time.deltaTime;
         }
 
-        public void Fire()
-        {
-            if (_canShoot == false)
-            {
-                return;
-            }
+        public abstract void Fire();
 
-            if (TryGetBullet(out Bullet bullet))
-            {
-                bullet.Run(_barrel.forward * _force, _barrel.position);
-                _lastShootTime = 0.0f;                
-            }
-        }
-
-        public void Recharge()
-        {
-            if (IsAnyActiveBullet())
-            {
-                return;
-            }
-            _bullets = new Bullet[_countClip];
-            for (int i = 0; i < _countClip; i++)
-            {
-                Bullet bullet = Instantiate(_bulletPrefab, _bulletRoot);
-                bullet.Sleep();
-                _bullets[i] = bullet;
-            }
-        }
-
-        private bool IsAnyActiveBullet()
-        {
-            if (_bullets == null)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < _countClip; i++)
-            {
-                Bullet bullet = _bullets[i];
-
-                if (bullet == null)
-                {
-                    continue;
-                }
-
-                if (bullet.IsActive)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private bool TryGetBullet(out Bullet result)
-        {
-            int candidate = -1;
-            result = default;
-
-            if (_bullets == null)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < _bullets.Length; i++)
-            {
-                Bullet bullet = _bullets[i];
-                if (bullet == null)
-                {
-                    continue;
-                }
-
-                if (bullet.IsActive)
-                {
-                    continue;
-                }
-
-                candidate = i;
-                break;
-            }
-
-            if (candidate == -1)
-            {
-                return false;
-            }
-
-            result = _bullets[candidate];
-            return true;
-        }
+        public abstract void Recharge();
     }
 }

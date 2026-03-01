@@ -12,6 +12,9 @@ namespace Code
         [SerializeField] private int _burstCount = 3;
         [SerializeField] private float _burstDelay = 0.3f;
 
+        [SerializeField] private AudioSource _audioSource;
+        [SerializeField] private AudioClip _shootSound;
+
         private Transform _bulletRoot;
         private Bullet[] _bullets;
 
@@ -52,10 +55,11 @@ namespace Code
                 if (TryGetBullet(out Bullet bullet))
                 {
                     bullet.Run(_barrel.forward * _force, _barrel.position);
+                    PlayShootSound();
                     LastShootTime = 0.0f;
                 }
-
-                yield return new WaitForSeconds(_burstDelay);
+                                
+                yield return new WaitForSeconds(_burstDelay);                
             }
 
             _isBurstShooting = false;
@@ -66,6 +70,7 @@ namespace Code
             if (TryGetBullet(out Bullet bullet))
             {
                 bullet.Run(_barrel.forward * _force, _barrel.position);
+                PlayShootSound();
                 LastShootTime = 0.0f;
             }
         }
@@ -143,6 +148,16 @@ namespace Code
 
             result = _bullets[candidate];
             return true;
+        }
+
+        private void PlayShootSound()
+        {
+            if (_audioSource == null || _shootSound == null)
+            {
+                return;
+            }
+
+            _audioSource.PlayOneShot(_shootSound);
         }
     }
 }

@@ -20,7 +20,13 @@ namespace Code
 
         public override void Fire()
         {
-            if (_instantiateRocket == null || _isReloading)
+            if (_instantiateRocket == null)
+            {
+                Debug.LogWarning("Bazooka: Нет готовой ракеты!");
+                return;
+            }
+
+            if (_isReloading)
             {
                 return;
             }
@@ -31,11 +37,16 @@ namespace Code
         {
             yield return new WaitForSeconds(_launchDelay);
 
+            if (_instantiateRocket == null)
+            {
+                Debug.LogWarning("Bazooka: Rocket is null in FireCoroutine!");
+                yield break;
+            }
+
             _instantiateRocket.Run(_barrel.forward * _force);
             _instantiateRocket = null;
 
             StartCoroutine(ReloadCoroutine());
-
         }
 
         private IEnumerator ReloadCoroutine()
@@ -54,7 +65,22 @@ namespace Code
             {
                 return;
             }
+
+            if (_rocketPrefab == null)
+            {
+                Debug.LogError("Префаб ракеты не назначен");
+                return;
+            }
+
+            if (_barrel == null)
+            {
+                Debug.LogError("Ствол ракеты (Barrel) не назначен");
+                return;
+            }
+
             _instantiateRocket = Instantiate(_rocketPrefab, _barrel);
+            _instantiateRocket.transform.localPosition = Vector3.zero;
+            _instantiateRocket.transform.localRotation = Quaternion.identity;
             _instantiateRocket.Sleep(_barrel.position);
         }
     }

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e6821efbde9ba4eac7ffad6ba6b953, type: 3}
   m_Name: BazookaConfig
   m_EditorClassIdentifier: Assembly-CSharp::Code.WeaponConfig
-  _force: 10
+  _force: 1
   _clipSize: 1
   _shotDelay: 1

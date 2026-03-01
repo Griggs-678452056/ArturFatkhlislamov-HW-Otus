@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Code
 {
@@ -36,5 +37,10 @@ namespace Code
         public abstract void Fire();
 
         public abstract void Recharge();
+
+        public void SetActive(bool isActive)
+        {
+            gameObject.SetActive(isActive);
+        }
     }
 }

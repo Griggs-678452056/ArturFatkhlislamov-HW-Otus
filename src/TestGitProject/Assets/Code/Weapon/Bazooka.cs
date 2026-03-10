@@ -13,6 +13,8 @@ namespace Code
         private Rocket _instantiateRocket;
         private bool _isReloading;
 
+        [SerializeField] private AudioSource _audioSource;
+        [SerializeField] private AudioClip _shootSound;
         private void Start()
         {
             Recharge();
@@ -44,6 +46,7 @@ namespace Code
             }
 
             _instantiateRocket.Run(_barrel.forward * _force);
+            PlayShootSound();
             _instantiateRocket = null;
 
             StartCoroutine(ReloadCoroutine());
@@ -82,6 +85,16 @@ namespace Code
             _instantiateRocket.transform.localPosition = Vector3.zero;
             _instantiateRocket.transform.localRotation = Quaternion.identity;
             _instantiateRocket.Sleep(_barrel.position);
+        }
+
+        private void PlayShootSound()
+        {
+            if (_audioSource == null || _shootSound == null)
+            {
+                return;
+            }
+
+            _audioSource.PlayOneShot(_shootSound);
         }
     }
 }

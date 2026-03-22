@@ -42,7 +42,7 @@ namespace Code
 
         private void OnCollisionEnter(Collision other)
         {
-            Destroy(gameObject);
+            Sleep();
 
             if (other.collider.TryGetComponent<HealthController>(out HealthController health))
             {
@@ -62,17 +62,33 @@ namespace Code
                 
         public void Sleep()
         {
+            if (_rb == null)
+            {
+                return;
+            }
+
+            _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
             _rb.Sleep();
+
             gameObject.SetActive(false);
             IsActive = false;
         }
 
         public void Run(Vector3 path, Vector3 position)
         {
+            if (_rb == null)
+            {
+                return;
+            }
+
             transform.position = position;
             transform.parent = null;
+
             gameObject.SetActive(true);
             _rb.WakeUp();
+            _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
             _rb.AddForce(path);
             IsActive = true;
         }

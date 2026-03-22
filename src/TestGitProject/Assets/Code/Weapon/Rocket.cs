@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Code
 {
@@ -16,7 +17,7 @@ namespace Code
 
         private void Awake()
         {
-            _rb = GetComponent<Rigidbody>();            
+            _rb = GetComponent<Rigidbody>();
         }
 
         private void OnCollisionEnter(Collision other)
@@ -51,15 +52,28 @@ namespace Code
 
         public void Run(Vector3 path)
         {
+            if (_rb == null)
+            {
+                return;
+            }
+
             transform.SetParent(null);
-            _rb.WakeUp();
             _rb.isKinematic = false;
+
+            _rb.WakeUp();
+
             _rb.AddForce(path, ForceMode.Impulse);
         }
 
         public void Sleep(Vector3 startPoint)
         {
+            if (_rb == null)
+            {
+                return;
+            }
+
             _rb.Sleep();
+
             _rb.isKinematic = true;
             transform.position = startPoint;
         }

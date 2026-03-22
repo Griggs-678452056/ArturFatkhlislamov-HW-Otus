@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Code
@@ -15,9 +16,22 @@ namespace Code
 
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private AudioClip _shootSound;
+
+        public event Action<int, int> OnAmmoChanged;
+
+        private const int MaxReserve = 3;
+        private int ClipSize => _weaponConfig.ClipSize;
+
+        private int _currentAmmo;
+        private int _reserveAmmo;
+
         private void Start()
         {
+            _currentAmmo = ClipSize;
+            _reserveAmmo = MaxReserve - 1;
+
             Recharge();
+            NotifyAmmoChanged();
         }
 
         public override void Fire()
@@ -41,24 +55,39 @@ namespace Code
 
             if (_instantiateRocket == null)
             {
-                Debug.LogWarning("Bazooka: Rocket is null in FireCoroutine!");
                 yield break;
             }
 
+            _currentAmmo--;
+
             _instantiateRocket.Run(_barrel.forward * _force);
             PlayShootSound();
+
             _instantiateRocket = null;
+            NotifyAmmoChanged();
 
             StartCoroutine(ReloadCoroutine());
         }
 
         private IEnumerator ReloadCoroutine()
         {
-            _isReloading = true;
+            if (_reserveAmmo <= 0)
+            {
+                yield break;
+            }
 
+            _isReloading = true;
             yield return new WaitForSeconds(_reloadTime);
 
+            int neededAmmo = ClipSize - _currentAmmo;
+            int ammoToLoad = Mathf.Min(neededAmmo, _reserveAmmo);
+
+            _currentAmmo += ammoToLoad;
+            _reserveAmmo -= ammoToLoad;
+                        
             Recharge();
+            NotifyAmmoChanged();
+
             _isReloading = false;
         }
 
@@ -95,6 +124,11 @@ namespace Code
             }
 
             _audioSource.PlayOneShot(_shootSound);
+        }
+               
+        private void NotifyAmmoChanged()
+        {
+            OnAmmoChanged?.Invoke(_currentAmmo, _reserveAmmo);
         }
     }
 }

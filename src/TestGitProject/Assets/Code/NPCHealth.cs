@@ -3,10 +3,11 @@ using UnityEngine;
 
 namespace Code
 {
-    public class PlayerHealth : MonoBehaviour
+    public class NPCHealth : MonoBehaviour
     {
         [SerializeField] private float _maxHP = 100f;
         private float _currentHP;
+        private bool _isDead;
 
         public float CurrentHP
         {
@@ -26,36 +27,35 @@ namespace Code
 
         public event Action<float, float> OnHealthChanged;
 
+        public event Action OnDeath;
+
         private void Awake()
         {
             _currentHP = _maxHP;
             NotifyHealthChanged();
         }
 
-        public bool CanTakeDamage(float damage)
+        public bool IsDead()
         {
-            return _currentHP - damage <= 0f;
+            return _isDead;
         }
 
         public void TakeDamage(float damage)
         {
+            if (IsDead())
+            {
+                return;
+            }
+
             _currentHP -= damage;
 
             if (_currentHP <= 0f)
             {
                 _currentHP = 0f;
-            }
+                _isDead = true;
 
-            NotifyHealthChanged();
-        }
-
-        public void Heal(float heal)
-        {
-            _currentHP += heal;
-
-            if (_currentHP > _maxHP)
-            {
-                _currentHP = _maxHP;
+                OnDeath?.Invoke();
+                Destroy(gameObject);
             }
 
             NotifyHealthChanged();

@@ -1,42 +1,45 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthUI : MonoBehaviour
+namespace Code
 {
-    [SerializeField] private Slider _healthBar;
-    [SerializeField] private PlayerHealth _playerHealth;
-
-    private void OnEnable()
+    public class HealthUI : MonoBehaviour
     {
-        if (_playerHealth != null)
-        {
-            _playerHealth.OnHealthChanged += UpdateHealthBar;
-        }
-    }
+        [SerializeField] private Slider _healthBar;
+        [SerializeField] private PlayerHealth _playerHealth;
 
-    private void OnDisable()
-    {
-        if (_playerHealth != null)
+        private void OnEnable()
         {
-            _playerHealth.OnHealthChanged -= UpdateHealthBar;
+            if (_playerHealth != null)
+            {
+                _playerHealth.OnHealthChanged += UpdateHealthBar;
+            }
         }
-    }
 
-    private void Start()
-    {
-        if (_playerHealth != null)
+        private void OnDisable()
         {
-            UpdateHealthBar(_playerHealth.CurrentHP, _playerHealth.MaxHP);
+            if (_playerHealth != null)
+            {
+                _playerHealth.OnHealthChanged -= UpdateHealthBar;
+            }
         }
-    }
 
-    private void UpdateHealthBar(float current, float max)
-    {
-        if (_healthBar == null)
+        private void Start()
         {
-            return;
+            if (_playerHealth != null)
+            {
+                UpdateHealthBar(_playerHealth.CurrentHP, _playerHealth.MaxHP);
+            }
         }
-        _healthBar.maxValue = max;
-        _healthBar.value = current;
+
+        private void UpdateHealthBar(float current, float max)
+        {
+            if (_healthBar == null)
+            {
+                return;
+            }
+            _healthBar.maxValue = max;
+            _healthBar.value = current;
+        }
     }
 }

@@ -58,8 +58,18 @@ namespace Code
 
                 rb.AddForce(_rb.linearVelocity * Force, ForceMode.Impulse);
             }
+
+            if (other.collider.TryGetComponent<EnemyHealth>(out EnemyHealth enemyHealth))
+            {
+                enemyHealth.TakeDamage(_damage);
+            }
+
+            if (other.collider.TryGetComponent<NPCHealth>(out NPCHealth npcHealth))
+            {
+                npcHealth.TakeDamage(_damage);
+            }                                   
         }
-                
+
         public void Sleep()
         {
             if (_rb == null)

@@ -27,7 +27,7 @@ namespace Code
         {
             Time.timeScale = 0.0f;
 
-            SceneManager.LoadScene(1, LoadSceneMode.Additive);
+            SceneManager.LoadScene("PauseMenu", LoadSceneMode.Additive);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
@@ -38,7 +38,7 @@ namespace Code
         {
             Time.timeScale = 1.0f;
 
-            SceneManager.UnloadSceneAsync(1);
+            SceneManager.UnloadSceneAsync("PauseMenu");
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

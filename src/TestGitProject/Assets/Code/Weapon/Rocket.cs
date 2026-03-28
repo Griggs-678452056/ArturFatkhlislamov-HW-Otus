@@ -47,6 +47,16 @@ namespace Code
                     }
                     rb.AddExplosionForce(_powerExplosion, center, radius);
                 }
+
+                if (other.collider.TryGetComponent<EnemyHealth>(out EnemyHealth enemyHealth))
+                {
+                    enemyHealth.TakeDamage(enemyHealth.MaxHP);
+                }
+
+                if (other.collider.TryGetComponent<NPCHealth>(out NPCHealth npcHealth))
+                {
+                    npcHealth.TakeDamage(npcHealth.MaxHP);
+                }
             }
         }
 

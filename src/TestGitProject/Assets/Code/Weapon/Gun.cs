@@ -18,8 +18,6 @@ namespace Code
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private AudioClip _shootSound;
 
-        public event Action<int, int> OnAmmoChanged;
-
         private Transform _bulletRoot;
         private Bullet[] _bullets;
 
@@ -28,7 +26,34 @@ namespace Code
         private int _currentAmmo;
         private int _reserveAmmo;
 
-        private int ClipSize => _weaponConfig.ClipSize;
+        public override int CurrentAmmo
+        {
+            get
+            {  
+                return _currentAmmo; 
+            }
+        }
+
+        public override int ReserveAmmo
+        {
+            get
+            {
+                return _reserveAmmo;
+            }
+        }
+
+        private int ClipSize
+        {
+            get
+            {
+                return _weaponConfig.ClipSize;
+            }
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+        }
 
         private void Start()
         {
@@ -38,12 +63,13 @@ namespace Code
             _reserveAmmo = ClipSize * 4;
 
             RechargePool();
-            NotifyAmmoChanged();
+
+            NotifyAmmoChanged(_currentAmmo, _reserveAmmo);
         }
 
         public override void Fire()
         {
-            if (CanShoot == false)
+            if (CanShoot == false || _currentAmmo <= 0)
             {
                 return;
             }
@@ -80,7 +106,7 @@ namespace Code
                     PlayShootSound();
                     LastShootTime = 0.0f;
 
-                    NotifyAmmoChanged();
+                    NotifyAmmoChanged(_currentAmmo, _reserveAmmo);
                 }
 
                 yield return new WaitForSeconds(_burstDelay);
@@ -104,7 +130,7 @@ namespace Code
                 PlayShootSound();
                 LastShootTime = 0.0f;
 
-                NotifyAmmoChanged();
+                NotifyAmmoChanged(_currentAmmo, _reserveAmmo);
             }
         }
 
@@ -130,7 +156,7 @@ namespace Code
                 }
             }
 
-            NotifyAmmoChanged();
+            NotifyAmmoChanged(_currentAmmo, _reserveAmmo);
         }
 
         private void RechargePool()
@@ -177,11 +203,6 @@ namespace Code
             }
 
             _audioSource.PlayOneShot(_shootSound);
-        }
-
-        private void NotifyAmmoChanged()
-        {
-            OnAmmoChanged?.Invoke(_currentAmmo, _reserveAmmo);
         }
     }
 }

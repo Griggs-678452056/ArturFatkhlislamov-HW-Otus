@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -6,35 +7,51 @@ namespace Code
     public class AmmoUI : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _ammo;
-        [SerializeField] private Gun _gun;
-        [SerializeField] private Bazooka _bazooka;
+        [SerializeField] private WeaponController _weaponController;
+
+        private Weapon _currentWeapon;
 
         private void OnEnable()
         {
-            if (_gun != null)
-            {
-                _gun.OnAmmoChanged += UpdateAmmo;
-            }
-
-            if (_bazooka != null)
-            {
-                _bazooka.OnAmmoChanged += UpdateAmmo;
-            }
+            _weaponController.OnWeaponChanged += HandleWeaponChanged;
         }
 
         private void OnDisable()
         {
-            if (_gun != null)
-            {
-                _gun.OnAmmoChanged -= UpdateAmmo;
-            }
+            _weaponController.OnWeaponChanged -= HandleWeaponChanged;
 
-            if (_bazooka != null)
+            UnsubscribeFromWeapon();
+        }
+
+        private void HandleWeaponChanged(Weapon weapon)
+        {
+            UnsubscribeFromWeapon();
+
+            _currentWeapon = weapon;
+
+            if (_currentWeapon != null)
             {
-                _bazooka.OnAmmoChanged -= UpdateAmmo;
+                _currentWeapon.OnAmmoChanged += UpdateAmmo;
+
+                UpdateAmmoImmediately();
+            }
+        }               
+
+        private void UnsubscribeFromWeapon()
+        {
+            if (_currentWeapon != null)
+            {
+                _currentWeapon.OnAmmoChanged -= UpdateAmmo;
+
+                _currentWeapon = null;
             }
         }
 
+        private void UpdateAmmoImmediately()
+        {
+            UpdateAmmo(_currentWeapon.CurrentAmmo, _currentWeapon.ReserveAmmo);
+        }
+        
         public void UpdateAmmo(int currentAmmo, int reserveAmmo)
         {
             _ammo.text = $"{currentAmmo} / {reserveAmmo}";

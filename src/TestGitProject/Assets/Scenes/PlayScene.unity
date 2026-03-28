@@ -1679,8 +1679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.AmmoUI
   _ammo: {fileID: 13815237}
-  _gun: {fileID: 991731777}
-  _bazooka: {fileID: 1973221842}
+  _weaponController: {fileID: 330585548}
 --- !u!1 &1712218654
 GameObject:
   m_ObjectHideFlags: 0

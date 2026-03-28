@@ -9,6 +9,8 @@ namespace Code
 
         private readonly Weapon[] _weapons;
 
+        public event Action<Weapon> OnWeaponChanged;
+
         public WeaponSelector(Weapon[] weapons)
         {
             _weapons = weapons;
@@ -64,6 +66,8 @@ namespace Code
             int index = (int)MathF.Abs((_currentIndex % _weapons.Length + _weapons.Length) % _weapons.Length);
             _currentWeapon = _weapons[index];
             _currentWeapon.SetActive(true);
+
+            OnWeaponChanged?.Invoke(_currentWeapon);
         }
     }
 }

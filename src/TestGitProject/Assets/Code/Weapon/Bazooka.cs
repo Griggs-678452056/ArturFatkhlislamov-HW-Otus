@@ -17,13 +17,33 @@ namespace Code
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private AudioClip _shootSound;
 
-        public event Action<int, int> OnAmmoChanged;
-
         private const int MaxReserve = 3;
-        private int ClipSize => _weaponConfig.ClipSize;
+        private int ClipSize
+        {
+            get
+            {
+                return _weaponConfig.ClipSize;
+            }
+        }
 
         private int _currentAmmo;
         private int _reserveAmmo;
+
+        public override int CurrentAmmo
+        {
+            get
+            {
+                return _currentAmmo;
+            }
+        }
+
+        public override int ReserveAmmo
+        {
+            get
+            {
+                return _reserveAmmo;
+            }
+        }
 
         private void Start()
         {
@@ -31,7 +51,7 @@ namespace Code
             _reserveAmmo = MaxReserve - 1;
 
             Recharge();
-            NotifyAmmoChanged();
+            NotifyAmmoChanged(_currentAmmo, _reserveAmmo);
         }
 
         public override void Fire()
@@ -64,7 +84,7 @@ namespace Code
             PlayShootSound();
 
             _instantiateRocket = null;
-            NotifyAmmoChanged();
+            NotifyAmmoChanged(_currentAmmo, _reserveAmmo);
 
             StartCoroutine(ReloadCoroutine());
         }
@@ -84,9 +104,9 @@ namespace Code
 
             _currentAmmo += ammoToLoad;
             _reserveAmmo -= ammoToLoad;
-                        
+
             Recharge();
-            NotifyAmmoChanged();
+            NotifyAmmoChanged(_currentAmmo, _reserveAmmo);
 
             _isReloading = false;
         }
@@ -124,11 +144,6 @@ namespace Code
             }
 
             _audioSource.PlayOneShot(_shootSound);
-        }
-               
-        private void NotifyAmmoChanged()
-        {
-            OnAmmoChanged?.Invoke(_currentAmmo, _reserveAmmo);
         }
     }
 }

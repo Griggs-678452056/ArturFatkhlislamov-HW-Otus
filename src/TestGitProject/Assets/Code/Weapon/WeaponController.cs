@@ -7,14 +7,18 @@ namespace Code
     {
         private WeaponSelector _weaponSelector;
 
+        public event Action<Weapon> OnWeaponChanged;
+
         private void Start()
         {
             Weapon[] weapons = GetComponentsInChildren<Weapon>(true);
             _weaponSelector = new WeaponSelector(weapons);
+
+            _weaponSelector.OnWeaponChanged += HandleWeaponChanged;
             _weaponSelector.Select(0);
 
         }
-
+                
         private void Update()
         {
             SelectWeapon();
@@ -53,6 +57,11 @@ namespace Code
             {
                 _weaponSelector.Select(1);
             }
+        }
+
+        private void HandleWeaponChanged(Weapon weapon)
+        {
+            OnWeaponChanged?.Invoke(weapon);
         }
     }
 }

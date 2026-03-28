@@ -12,8 +12,13 @@ namespace Code
         protected float _force;
         private float _shotDelay;
 
+        public event Action<int, int> OnAmmoChanged;
+
         protected bool CanShoot { get; private set; }
         public float LastShootTime { get; protected set; }
+
+        public abstract int CurrentAmmo { get; }
+        public abstract int ReserveAmmo { get; }
 
         protected virtual void Awake()
         {
@@ -41,6 +46,11 @@ namespace Code
         public void SetActive(bool isActive)
         {
             gameObject.SetActive(isActive);
+        }
+
+        protected void NotifyAmmoChanged(int currentAmmo, int reserveAmmo)
+        {
+            OnAmmoChanged?.Invoke(currentAmmo, reserveAmmo);
         }
     }
 }

@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f0dc7ddd8343874abdbee788187bad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.Rocket
-  _powerExplosion: 20
+  _powerExplosion: 100
   _scale: 10
 --- !u!33 &1633915940028770984
 MeshFilter:

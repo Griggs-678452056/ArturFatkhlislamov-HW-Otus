@@ -9,7 +9,7 @@ namespace Code
         [SerializeField] private float _maxHP = 100f;
         private float _currentHP;
         private bool _isDead;
-
+        private bool _registered;
         public float CurrentHP
         {
             get
@@ -34,6 +34,20 @@ namespace Code
         {
             _currentHP = _maxHP;
             NotifyHealthChanged();
+        }
+
+        private void Start()
+        {
+            if(_registered)
+                return;
+
+            WinLoseController controller = FindAnyObjectByType<WinLoseController>();
+
+            if (controller != null)
+            {
+                controller.RegisterEnemy(this);
+                _registered = true;
+            }
         }
 
         public bool IsDead()
